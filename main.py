@@ -84,23 +84,7 @@ def ip_ascii(addr_id):
 
 def print_header(packet):
     """parse network packet. Returns what kind of packet this is, TCP, UDP etc etc"""
-    header = packet[:20]
-    payload = struct.unpack("!BBHHHBBH4s4s", header)
-
-    version = payload[0] >> 4
-    size = payload[2]
-    ident = payload[3]
-    packet_type = get_protocol(payload[6])
-    ttl = payload[5]
-    source_ip = socket.inet_ntoa(payload[8])
-    dest_ip = socket.inet_ntoa(payload[9])
-
-    print(
-        "ver: {}  prot: {}\t TTL: {}    size: {} bytes\t ID: {}\t source: {}\t destination {}"
-        .format(version, packet_type, ttl, size, ident, source_ip, dest_ip)
-    )
-
-    return packet_type
+    pass
 
 if __name__ == '__main__':
     capture = None

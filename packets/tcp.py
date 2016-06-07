@@ -17,4 +17,4 @@ class TCP(object):
         self.window_size = self.__packet[5]
         self.checksum = self.__packet[6]
         self.urg = self.__packet[7]
-        # self.data = packet[20:]
+        self.data = packet[20:]
