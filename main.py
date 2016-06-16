@@ -3,17 +3,17 @@
 """sniffing for sockets"""
 import socket
 import sys
-
 from packets import TCP, UDP, ethernet
+from options import Options
 
 PACKET_SIZE = 65535
 
 
 if __name__ == '__main__':
-    platform = sys.platform
+    opts = Options(sys.platform, sys.argv)
     capture = None
 
-    if 'win' in platform:
+    if opts.get_platform() == 'win':
         capture = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
         #reuse address
         capture.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -21,30 +21,45 @@ if __name__ == '__main__':
         capture.bind(
             (socket.gethostbyname(socket.gethostname()), 0)
         )
-        ethernet.set_promiscuous_mode_on(capture)
 
-    elif 'linux' in platform:
+        if opts.is_promiscuous():
+            ethernet.set_promiscuous_mode_on(capture)
+
+    elif opts.get_platform() == 'linux':
         capture = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x03))
-        ethernet.set_promiscuous_mode_on(capture)
+
+        if opts.is_promiscuous():
+            ethernet.set_promiscuous_mode_on(capture)
 
     i = 0
-    while i < 15:
+    while i < 20:
         i = i + 1
         raw_packet = capture.recv(PACKET_SIZE)
-        ver, length, pId, ttl, pType, src, dest, payload = ethernet.parse_header(raw_packet)
+        packet = ethernet.parse_header(raw_packet)
+        src_ip = packet.get("src_ip")
+        dest_ip = packet.get("dest_ip")
+        src_mac = packet.get("src_mac", "-")
+        dest_mac = packet.get("dest_mac", "-")
 
         print(
-            "Version: {} Size: {} \tID: {} \tTTL: {}   Type: {} \tSource IP: {} Destination IP:{}"
-            .format(ver, length, pId, ttl, pType, src, dest)
+            "Source IP: {} Destination IP: {} Source MAC: {} Destination MAC: {}\n"
+            .format(src_ip, dest_ip, src_mac, dest_mac),
+
+            "\tVersion: {} Size: {} \tID: {} \tTTL: {}   Type: {}\n"
+            .format(packet.get("version"), packet.get("size"), packet.get("id"), packet.get("ttl"), packet.get("type"))
         )
 
-        if pType is "TCP":
-            tcp = TCP(payload)
+        if packet["type"] is "TCP":
+            tcp = TCP(packet["data"])
             tcp.print_header()
+            tcp.print_data()
 
-        elif pType is "UDP":
-            udp = UDP(payload)
+        elif packet["type"] is "UDP":
+            udp = UDP(packet["data"])
             udp.print_header()
+            udp.print_data()
 
-    ethernet.set_promiscuous_mode_off(capture)
+    if opts.is_promiscuous():
+        ethernet.set_promiscuous_mode_off(capture)
+
     capture.close()

@@ -3,13 +3,14 @@
 import sys
 import struct
 import socket
+from binascii import hexlify
 from ctypes import Structure, c_short, c_char
 
 if 'linux' in sys.platform:
     import fcntl
-    SIOCGIFFLAGS = 0x8913
-    SIOCSIFFLAGS = 0x8914
-    IFF_PROMISC = 0x100
+    SIOCGIFFLAGS = 0x8913 #/usr/include/linux/sockios.h
+    SIOCSIFFLAGS = 0x8914 #/usr/include/linux/sockios.h
+    IFF_PROMISC = 0x100 #/usr/include/net/if.h
 
 
 class ifreq(Structure):
@@ -84,8 +85,44 @@ def parse_header(packet):
         dest_ip = socket.inet_ntoa(header[9])
         data = packet[20:]
 
-        return p_version, p_length, p_id, p_ttl, p_type, src_ip, dest_ip, data
+        return {
+            "version": p_version,
+            "size": p_length,
+            "id": p_id,
+            "ttl": p_ttl,
+            "type": p_type,
+            "src_ip": src_ip,
+            "dest_ip": dest_ip,
+            "data": data
+        }
 
     elif 'linux' in sys.platform:
-        #needs to parse ethernet frame, and then the ip frame
-        return -1
+        header = struct.unpack("!6s6sH", packet[:14])
+        src_mac = hexlify(header[0])
+        dest_mac = hexlify(header[1])
+        eth_type = header[2]
+        payload = packet[14:]
+
+        if eth_type & 0x0800:
+            ip_header = struct.unpack("!BBHHHBBH4s4s", payload[:20])
+            p_version = ip_header[0] >> 4
+            p_length = ip_header[2]
+            p_id = ip_header[3]
+            p_ttl = ip_header[5]
+            p_type = get_protocol(ip_header[6])
+            src_ip = socket.inet_ntoa(ip_header[8])
+            dest_ip = socket.inet_ntoa(ip_header[9])
+            data = payload[20:]
+
+        return {
+            "version": p_version,
+            "size": p_length,
+            "id": p_id,
+            "ttl": p_ttl,
+            "type": p_type,
+            "src_mac": src_mac,
+            "dest_mac": dest_mac,
+            "src_ip": src_ip,
+            "dest_ip": dest_ip,
+            "data": data
+        }

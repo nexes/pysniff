@@ -1,5 +1,6 @@
 """TCP class packets"""
 import struct
+import textwrap
 
 
 class TCP(object):
@@ -44,9 +45,13 @@ class TCP(object):
         print(
             "\n\n\t",
             "Seq number: {} ACK number: {} Checksum: {}\n".format(self.seq_number, self.ack_number, self.checksum),
-            "\t{:-^80s}\n".format("-")
         )
 
     def print_data(self):
         """prints TCP data information"""
-        pass
+        data_strs = textwrap.wrap(str(self.data), width=80)
+
+        for line in data_strs:
+            print("\t\t", "{}".format(line))
+
+        print("{:-<90s}\n".format("-"))

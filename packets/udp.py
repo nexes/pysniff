@@ -1,6 +1,6 @@
 """UDP class packets"""
 import struct
-
+import textwrap
 
 class UDP(object):
     """Class representing a udp packet"""
@@ -18,9 +18,13 @@ class UDP(object):
     def print_header(self):
         """prints UDP header information"""
         print("\tSource port: {} Destination port: {}".format(self.src_port, self.dest_port))
-        print("\tHeader size: {} Checksum: {}".format(self.length, self.checksum))
-        print("\t{:-^80s}\n".format("-"))
+        print("\tHeader size: {} Checksum: {}\n".format(self.length, self.checksum))
 
     def print_data(self):
         """prints UDP payload information"""
-        print("{}".format(self.data))
+        data_strs = textwrap.wrap(str(self.data), width=80)
+
+        for line in data_strs:
+            print("\t\t", "{}".format(line))
+
+        print("{:-<80s}\n".format("-"))
