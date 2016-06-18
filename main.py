@@ -10,7 +10,7 @@ PACKET_SIZE = 65535
 
 
 if __name__ == '__main__':
-    opts = Options(sys.platform, sys.argv)
+    opts = Options(sys.platform)
     capture = None
 
     if opts.get_platform() == 'win':
@@ -32,7 +32,7 @@ if __name__ == '__main__':
             ethernet.set_promiscuous_mode_on(capture)
 
     i = 0
-    while i < 20:
+    while i < 5:
         i = i + 1
         raw_packet = capture.recv(PACKET_SIZE)
         packet = ethernet.parse_header(raw_packet)
