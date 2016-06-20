@@ -15,7 +15,7 @@ pysniff.py [options]
 ##Example output
 *You will probably need to run this with elevated privileges, e.g sudo or run as administrator*
 
-pysniff.py --length 1 -p
+pysniff.py --length 3 -p
 ```
 Source IP: 192.168.0.1 Destination IP: 239.255.255.250 Source MAC: - Destination MAC: -
                  	Version: 4 Size: 430 	ID: 0 	TTL: 4   Type: UDP
