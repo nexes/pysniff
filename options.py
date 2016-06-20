@@ -1,6 +1,6 @@
 """holds application level settings"""
 import argparse
-
+from os.path import expanduser
 
 class Options(object):
     """holds application level options"""
@@ -8,7 +8,7 @@ class Options(object):
     def __init__(self, platform):
         self.platform = platform
         self._parser = argparse.ArgumentParser(description="Sniff ethernet packets",
-                                               prog="Sniffer.py",
+                                               prog="pysniff.py",
                                                epilog="Sniffer was written by Joe Berria <joeberria@gmail.com>")
 
         self._parser.add_argument("-p",
@@ -30,7 +30,8 @@ class Options(object):
                                   help="Will only capture this amount of packets")
 
         self.args = self._parser.parse_args()
-        print(self.args)
+        if self.args.output is not None:
+            self.args.output = '/'.join((expanduser('~'), self.args.output))
 
     def get_platform(self):
         """returns a string representing if the OS in Windows, Linux, Unknown"""
@@ -52,4 +53,4 @@ class Options(object):
 
     def output_file(self):
         """returns the name of the output file so save the captured packets"""
-        pass
+        return self.args.output

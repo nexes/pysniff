@@ -28,3 +28,21 @@ class UDP(object):
             print("\t\t", "{}".format(line))
 
         print("{:-<80s}\n".format("-"))
+
+    def write_header(self, filename):
+        """write UDP header to file"""
+        with open(filename, 'a', encoding='utf-8') as f:
+            f.write("\tSource port: {} Destination port: {}\n".format(self.src_port, self.dest_port))
+            f.write("\t\tHeader size: {} Checksum: {}\n\n".format(self.length, self.checksum))
+
+    def write_data(self, filename):
+        """write UDP data to file"""
+        data_strs = textwrap.wrap(str(self.data), width=80)
+        data = ""
+
+        for line in data_strs:
+            data = data + "\t\t{}\n".format(line)
+
+        with open(filename, 'a', encoding='utf-8') as f:
+            f.write(data)
+            f.write("{:-<80s}\n".format("-"))
