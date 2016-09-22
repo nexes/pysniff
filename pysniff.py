@@ -29,7 +29,7 @@ if __name__ == '__main__':
             ethernet.set_promiscuous_mode_on(capture)
 
     elif opts.get_platform() == 'linux':
-        capture = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x03))
+        capture = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.htons(0x03))
 
         if opts.is_promiscuous():
             ethernet.set_promiscuous_mode_on(capture)

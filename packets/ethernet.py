@@ -6,7 +6,7 @@ import socket
 from binascii import hexlify
 from ctypes import Structure, c_short, c_char
 
-if 'linux' in sys.platform:
+if 'linux' or 'darwin' in sys.platform:
     import fcntl
     SIOCGIFFLAGS = 0x8913 #/usr/include/linux/sockios.h
     SIOCSIFFLAGS = 0x8914 #/usr/include/linux/sockios.h
@@ -17,37 +17,36 @@ class ifreq(Structure):
     """IF struct for socket flags"""
     _fields_ = [
         ("ifr_name", c_char * 16),
-        ("ifr_flags", c_short)]
-
+        ("ifr_flags", c_short)
+    ]
 
 def set_promiscuous_mode_off(sock):
     """turns off promisuous mode on NIC"""
 
-    if 'linux' in sys.platform:
-        sock_fields = ifreq(ifr_name=b"wlp2s0")
+    if sys.platform in ['linux', 'darwin']:
+        sock_fields = ifreq(ifr_name=b"en0")
 
         fcntl.ioctl(sock.fileno(), SIOCGIFFLAGS, sock_fields)
         sock_fields.ifr_flags &= ~IFF_PROMISC
 
         fcntl.ioctl(sock.fileno(), SIOCSIFFLAGS, sock_fields)
 
-    elif 'win' in sys.platform:
+    elif 'win' == sys.platform:
         sock.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)
 
 def set_promiscuous_mode_on(sock):
     """if windows, set to promiscuous mode"""
 
-    if 'linux' in sys.platform:
-        sock_fields = ifreq(ifr_name=b"wlp2s0")
+    if sys.platform in ['linux', 'darwin']:
+        sock_fields = ifreq(ifr_name=b"en0")
 
         fcntl.ioctl(sock.fileno(), SIOCGIFFLAGS, sock_fields)
         sock_fields.ifr_flags |= IFF_PROMISC
 
         fcntl.ioctl(sock.fileno(), SIOCSIFFLAGS, sock_fields)
 
-    elif 'win' in sys.platform:
+    elif 'win' == sys.platform:
         sock.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
-
 
 def get_protocol(prot_id):
     """returns ascii version of protol based on numerica input value

@@ -35,10 +35,10 @@ class Options(object):
 
     def get_platform(self):
         """returns a string representing if the OS in Windows, Linux, Unknown"""
-        if 'win' in self.platform:
+        if 'win' == self.platform:
             return "win"
 
-        elif 'linux' in self.platform:
+        elif self.platform in ['linux', 'darwin']:
             return "linux"
 
         return "Unknown"
