@@ -34,6 +34,7 @@ class TCP(object):
         """prints TCP header information"""
         print("\tSource port: {: <5d} Destination port: {: <5d}\n".format(self.src_port, self.dest_port))
 
+        dataType = "TCP"
         line_break = 0
         for key, value in self.flags.items():
             line_break = line_break + 1
@@ -42,9 +43,12 @@ class TCP(object):
             if line_break is 4:
                 print()
 
+        if self.src_port == 80 or self.dest_port == 80:
+            dataType = "HTTP"
+        
         print(
             "\n\n\t",
-            "Seq number: {} ACK number: {} Checksum: {}\n".format(self.seq_number, self.ack_number, self.checksum),
+            "Seq number: {} ACK number: {} Checksum: {} Data Type: {}\n".format(self.seq_number, self.ack_number, self.checksum, dataType)
         )
 
     def print_data(self):
@@ -58,8 +62,12 @@ class TCP(object):
 
     def write_header(self, filename):
         """writes TCP header information"""
+        dataType = "TCP"
+        if self.src_port == 80 or self.dest_port == 80:
+            dataType = "HTTP"
+
         _info = "\tSource port: {: <5d} Destination port: {: <5d}\n".format(self.src_port, self.dest_port)
-        _info2 ="\n\tSeq number: {} ACK number: {} Checksum: {}\n".format(self.seq_number, self.ack_number, self.checksum) 
+        _info2 ="\n\tSeq number: {} ACK number: {} Checksum: {} Data Type: {}\n".format(self.seq_number, self.ack_number, self.checksum, dataType)
         _flags = " "
 
         line_break = 0
