@@ -1,8 +1,8 @@
-#PySniff
-##What is it
+# PySniff
+## What is it
 Capture ethernet packets passing through your computer. The captured packets and be printed to the console or saved to a file.
 
-##Usage
+## Usage
 pysniff.py [options]
 
 |Option|Description|
@@ -12,8 +12,8 @@ pysniff.py [options]
 |-o, --output|The name of the output file to be saved. This will save in the users home directory by default|
 |-h, --help|This help message|
 
-##Example output
-*You will probably need to run this with elevated privileges, e.g sudo or run as administrator*
+## Example output
+* You will probably need to run this with elevated privileges, e.g sudo or run as administrator*
 
 pysniff.py --length 3 -p
 ```
@@ -49,10 +49,11 @@ Source IP: 172.217.3.174 Destination IP: 192.168.0.149 Source MAC: - Destination
 		b'\x01\x01\x05\n\x10"1>\x10"1?'
 ```
 
-##TODO:
+## TODO:
 * parse more packet types
 * sniff out other networked computers and open ports
 * GUI
 
-#LICENSE (MIT)
+# LICENSE (MIT)
 Copyright (c) 2016 Joe Berria
+- with a small contribution from [Rafael Bourscheid da Silveira](https://github.com/bsrafael) and [Marcio Fernando Paludo](https://github.com/MarcioFPaludo)
