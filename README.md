@@ -54,6 +54,9 @@ Source IP: 172.217.3.174 Destination IP: 192.168.0.149 Source MAC: - Destination
 * sniff out other networked computers and open ports
 * GUI
 
+## Contributions
+* [Rafael Bourscheid da Silveira](https://github.com/bsrafael)
+* [Marcio Fernando Paludo](https://github.com/MarcioFPaludo)
+
 # LICENSE (MIT)
-Copyright (c) 2016 Joe Berria
-- with a small contribution from [Rafael Bourscheid da Silveira](https://github.com/bsrafael) and [Marcio Fernando Paludo](https://github.com/MarcioFPaludo)
+Copyright (c) 2016-2020 Joe Berria
